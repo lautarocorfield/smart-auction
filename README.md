@@ -81,3 +81,8 @@ constructor(uint256 _minPrice)
 * Losing bidders receive 98% of their bid as refund; 2% is retained as commission.
 
 * Partial refunds are only allowed for users with more than one offer.
+
+## 📍 Deployed Contract
+
+- **Network:** Sepolia Testnet  
+- **Address:** https://sepolia.etherscan.io/address/0xf2cd72860B947253991dB71856841907CcbE433c

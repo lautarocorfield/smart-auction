@@ -8,6 +8,8 @@ A Solidity smart contract implementing a decentralized auction system with key f
 - Partial refund system for bidders who placed multiple offers.
 - 2% commission on refunded bids (retained by the contract owner).
 - Only the owner can finalize the auction once the time is up.
+- Emergency ETH withdrawal function for the owner.
+
 
 ---
 
@@ -22,14 +24,16 @@ constructor(uint256 _minPrice)
 
 🔧 Functions
 
-| Function          | Visibility         | Description                                                                                                      |
-| ----------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `bid()`           | `external payable` | Places a bid. Must be higher than min price and 5% above current best.                                           |
-| `winner()`        | `external view`    | Returns the current winning offer (last valid one).                                                              |
-| `showOffers()`    | `external view`    | Returns all offers submitted.                                                                                    |
-| `finishAuction()` | `external`         | Finalizes the auction and refunds all non-winning bidders (minus 2%). Only callable by owner after auction ends. |
-| `partialRefund()` | `external`         | Allows users with multiple offers to request a partial refund of previous offers.                                |
-| `receive()`       | `external payable` | Reverts any direct ETH transfers. Only `bid()` is allowed.                                                       |
+| Function              | Visibility         | Description                                                                                                              |
+| --------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `bid()`               | `external payable` | Places a bid. Must be higher than the min price and 5% above the current best.                                           |
+| `winner()`            | `external view`    | Returns the current winning offer (last valid one).                                                                      |
+| `showOffers()`        | `external view`    | Returns all offers submitted.                                                                                            |
+| `finishAuction()`     | `external`         | Finalizes the auction and refunds all non-winning bidders (minus 2%). Only callable by the owner after the auction ends. |
+| `partialRefund()`     | `external`         | Allows users with multiple offers to request a partial refund of previous offers.                                        |
+| `emergencyWithdraw()` | `external`         | Allows the owner to withdraw all ETH from the contract in case of emergency.                                             |
+| `receive()`           | `external payable` | Reverts any direct ETH transfers. Only `bid()` is allowed.                                                               |
+
 
 ⚙️ Internal Functions
 
@@ -53,10 +57,11 @@ constructor(uint256 _minPrice)
 | `hasMultipleOffers`          | Requires the sender to have made more than one offer.           |
 
 📄 Events
-| Event                           | Description                                      |
-| ------------------------------- | ------------------------------------------------ |
-| `NewOffer(Offer indexed offer)` | Emitted when a new offer is successfully placed. |
-| `FinishAuction(address winner)` | Emitted when the auction is finalized.           |
+| Event                                   | Description                                           |
+| --------------------------------------- | ----------------------------------------------------- |
+| `NewOffer(Offer indexed offer)`         | Emitted when a new offer is successfully placed.      |
+| `FinishAuction(address winner)`         | Emitted when the auction is finalized.                |
+| `EmergencyWithdrawal(address, uint256)` | Emitted when the owner withdraws ETH in an emergency. |
 
 
 🗃️ State Variables
@@ -70,6 +75,7 @@ constructor(uint256 _minPrice)
 | `minPrice`       | `uint256`                     | Minimum price required to bid.            |
 | `startTime`      | `uint256`                     | Timestamp when the auction started.       |
 | `finishTime`     | `uint256`                     | Timestamp when the auction is set to end. |
+
 
 📌 Notes
 * All ETH sent directly to the contract is rejected — bids must go through bid().
@@ -85,4 +91,4 @@ constructor(uint256 _minPrice)
 ## 📍 Deployed Contract
 
 - **Network:** Sepolia Testnet  
-- **Address:** https://sepolia.etherscan.io/address/0xf2cd72860B947253991dB71856841907CcbE433c
+- **Address:** https://sepolia.etherscan.io/address/0xDe431eb321e503C84729EAc5eD56bc8f8993E70F
